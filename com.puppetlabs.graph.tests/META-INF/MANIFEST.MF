@@ -12,7 +12,8 @@ Require-Bundle: com.puppetlabs.graph,
  org.junit,
  com.puppetlabs.geppetto.pp,
  com.puppetlabs.geppetto.common,
- com.puppetlabs.graph.emf
+ com.puppetlabs.graph.emf,
+ com.puppetlabs.geppetto.injectable.eclipse
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
  J2SE-1.5

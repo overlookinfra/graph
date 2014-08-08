@@ -4,51 +4,75 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *   Cloudsmith
- * 
+ *
  */
 package com.puppetlabs.graph.tests;
+
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
-import com.puppetlabs.geppetto.common.os.FileUtils;
-import com.puppetlabs.graph.DefaultGraphModule;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.osgi.service.datalocation.Location;
 import org.junit.Before;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import com.puppetlabs.geppetto.common.util.BundleAccess;
+import com.puppetlabs.geppetto.injectable.CommonModuleProvider;
+import com.puppetlabs.graph.DefaultGraphModule;
 
 /**
  *
  */
 public class AbstractGraphTests {
+
+	public static void delete(File fileOrDir) throws IOException {
+		File[] children = fileOrDir.listFiles();
+		if(children != null)
+			for(File child : children)
+				delete(child);
+		if(!fileOrDir.delete() && fileOrDir.exists())
+			throw new IOException("Unable to delete " + fileOrDir);
+	}
+
+	private static File getBasedir() {
+		if(basedir == null) {
+			String basedirProp = System.getProperty("basedir");
+			if(basedirProp == null) {
+				try {
+					File testData = getBundleAccess().getFileFromClassBundle(AbstractGraphTests.class, "output");
+					if(testData == null || !testData.isDirectory())
+						fail("Unable to determine basedir");
+					basedir = testData.getParentFile();
+				}
+				catch(IOException e) {
+					fail(e.getMessage());
+				}
+			}
+			else
+				basedir = new File(basedirProp);
+		}
+		return basedir;
+	}
+
+	public static BundleAccess getBundleAccess() {
+		return commonInjector.getInstance(BundleAccess.class);
+	}
+
 	public static File getTestOutputFolder(String name, boolean purge) throws IOException {
-		Location instanceLocation = Platform.getInstanceLocation();
-		URL url = instanceLocation != null
-				? instanceLocation.getURL()
-				: null;
-		File testFolder;
-		if(instanceLocation == null || !instanceLocation.isSet() || url == null) {
-			String tempDir = System.getProperty("java.io.tmpdir");
-			testFolder = new File(tempDir, name);
-		}
-		else {
-			testFolder = new File(toFile(url), name);
-		}
+		File testFolder = new File(new File(new File(getBasedir(), "target"), "testOutput"), name);
 		testFolder.mkdirs();
 		if(purge) {
 			// Ensure that the folder is empty
 			for(File file : testFolder.listFiles())
-				FileUtils.rmR(file);
+				delete(file);
 		}
 		return testFolder;
 	}
@@ -56,6 +80,10 @@ public class AbstractGraphTests {
 	public static File toFile(URL url) throws IOException {
 		return new File(new Path(FileLocator.toFileURL(url).getPath()).toOSString());
 	}
+
+	private static File basedir;
+
+	private static Injector commonInjector = Guice.createInjector(CommonModuleProvider.getCommonModule());
 
 	private Injector injector;
 
@@ -69,7 +97,7 @@ public class AbstractGraphTests {
 
 	/**
 	 * This implementation returns a DefaultGraphModule.
-	 * 
+	 *
 	 * @return
 	 */
 	protected Module getModule() {
