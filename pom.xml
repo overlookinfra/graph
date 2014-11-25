@@ -16,8 +16,8 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<guice.groupId>org.sonatype.sisu</guice.groupId>
-		<guice.artifactId>sisu-guice</guice.artifactId>
+		<guice.groupId>com.google.inject</guice.groupId>
+		<guice.artifactId>guice</guice.artifactId>
 		<nexusServer>http://geppetto-nexus.puppetlabs.com</nexusServer>
 		<parentSiteURL>${nexusServer}/content/sites/graph-site</parentSiteURL>
 		<emf.version>2.10.0-v20140514-1158</emf.version>
@@ -104,7 +104,7 @@
 			<dependency>
 				<groupId>${guice.groupId}</groupId>
 				<artifactId>${guice.artifactId}</artifactId>
-				<version>[3.1,)</version>
+				<version>4.0-beta5</version>
 			</dependency>
 			<dependency>
 				<groupId>org.eclipse.osgi</groupId>
