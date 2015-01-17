@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.puppetlabs.graph</groupId>
@@ -20,8 +21,7 @@
 		<guice.artifactId>guice</guice.artifactId>
 		<nexusServer>http://geppetto-nexus.puppetlabs.com</nexusServer>
 		<parentSiteURL>${nexusServer}/content/sites/graph-site</parentSiteURL>
-		<emf.version>2.10.0-v20140514-1158</emf.version>
-		<geppetto.version>4.2.0</geppetto.version>
+		<emf.version>2.10.1-v20140901-1043</emf.version>
 	</properties>
 
 	<organization>
@@ -35,8 +35,8 @@
 		<connection>scm:git:git://github.com/puppetlabs/grahp.git</connection>
 		<url>https://github.com/puppetlabs/graph</url>
 		<developerConnection>scm:git:git@github.com:puppetlabs/graph.git</developerConnection>
-	  <tag>HEAD</tag>
-  </scm>
+		<tag>HEAD</tag>
+	</scm>
 
 	<distributionManagement>
 		<repository>
@@ -99,7 +99,7 @@
 			<dependency>
 				<groupId>com.google.guava</groupId>
 				<artifactId>guava</artifactId>
-				<version>13.0.1</version>
+				<version>18.0</version>
 			</dependency>
 			<dependency>
 				<groupId>${guice.groupId}</groupId>
@@ -109,7 +109,7 @@
 			<dependency>
 				<groupId>org.eclipse.osgi</groupId>
 				<artifactId>org.eclipse.osgi</artifactId>
-				<version>3.10.0-v20140606-1445</version>
+				<version>3.10.2-v20141103-1919</version>
 			</dependency>
 			<dependency>
 				<groupId>org.eclipse.core</groupId>
@@ -125,21 +125,6 @@
 				<groupId>org.eclipse.emf</groupId>
 				<artifactId>org.eclipse.emf.common</artifactId>
 				<version>${emf.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.puppetlabs.geppetto</groupId>
-				<artifactId>com.puppetlabs.geppetto.common</artifactId>
-				<version>${geppetto.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.puppetlabs.geppetto</groupId>
-				<artifactId>com.puppetlabs.geppetto.pp</artifactId>
-				<version>${geppetto.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.puppetlabs.geppetto</groupId>
-				<artifactId>com.puppetlabs.geppetto.injectable.standalone</artifactId>
-				<version>${geppetto.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.log4j</groupId>
@@ -191,6 +176,23 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-release-plugin</artifactId>
 					<version>2.5</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>2.9.1</version>
+					<executions>
+						<execution>
+							<id>attach-javadoc</id>
+							<phase>verify</phase>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<additionalparam>-Xdoclint:none</additionalparam>
+					</configuration>
 				</plugin>
 			</plugins>
 		</pluginManagement>

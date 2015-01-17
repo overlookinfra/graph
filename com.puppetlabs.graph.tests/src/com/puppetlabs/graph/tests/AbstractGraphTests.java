@@ -11,79 +11,31 @@
  */
 package com.puppetlabs.graph.tests;
 
-import static org.junit.Assert.fail;
-
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
+import java.nio.file.Files;
 
-import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Path;
 import org.junit.Before;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
-import com.puppetlabs.geppetto.common.util.BundleAccess;
-import com.puppetlabs.geppetto.injectable.CommonModuleProvider;
 import com.puppetlabs.graph.DefaultGraphModule;
 
 /**
  *
  */
 public class AbstractGraphTests {
-
-	public static void delete(File fileOrDir) throws IOException {
-		File[] children = fileOrDir.listFiles();
-		if(children != null)
-			for(File child : children)
-				delete(child);
-		if(!fileOrDir.delete() && fileOrDir.exists())
-			throw new IOException("Unable to delete " + fileOrDir);
+	public static File getTestOutputFolder(String subdirName) throws IOException {
+		if(tmpdir == null)
+			tmpdir = Files.createTempDirectory("graphtest_").toFile();
+		tmpdir.deleteOnExit();
+		File subdir = new File(tmpdir, subdirName);
+		subdir.mkdirs();
+		return subdir;
 	}
 
-	private static File getBasedir() {
-		if(basedir == null) {
-			String basedirProp = System.getProperty("basedir");
-			if(basedirProp == null) {
-				try {
-					File testData = getBundleAccess().getFileFromClassBundle(AbstractGraphTests.class, "output");
-					if(testData == null || !testData.isDirectory())
-						fail("Unable to determine basedir");
-					basedir = testData.getParentFile();
-				}
-				catch(IOException e) {
-					fail(e.getMessage());
-				}
-			}
-			else
-				basedir = new File(basedirProp);
-		}
-		return basedir;
-	}
-
-	public static BundleAccess getBundleAccess() {
-		return commonInjector.getInstance(BundleAccess.class);
-	}
-
-	public static File getTestOutputFolder(String name, boolean purge) throws IOException {
-		File testFolder = new File(new File(new File(getBasedir(), "target"), "testOutput"), name);
-		testFolder.mkdirs();
-		if(purge) {
-			// Ensure that the folder is empty
-			for(File file : testFolder.listFiles())
-				delete(file);
-		}
-		return testFolder;
-	}
-
-	public static File toFile(URL url) throws IOException {
-		return new File(new Path(FileLocator.toFileURL(url).getPath()).toOSString());
-	}
-
-	private static File basedir;
-
-	private static Injector commonInjector = Guice.createInjector(CommonModuleProvider.getCommonModule());
+	private static File tmpdir;
 
 	private Injector injector;
 
