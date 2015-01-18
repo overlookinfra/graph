@@ -4,7 +4,7 @@
 
 	<groupId>com.puppetlabs.graph</groupId>
 	<artifactId>parent</artifactId>
-	<version>1.0.4</version>
+	<version>1.0.5-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>Graph Site Project</name>
@@ -34,7 +34,7 @@
 		<connection>scm:git:git://github.com/puppetlabs/grahp.git</connection>
 		<url>https://github.com/puppetlabs/graph</url>
 		<developerConnection>scm:git:git@github.com:puppetlabs/graph.git</developerConnection>
-		<tag>graph-1.0.4</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<distributionManagement>
